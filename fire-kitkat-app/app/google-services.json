@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "282637630909",
+    "firebase_url": "https://fire-kitkat.firebaseio.com",
+    "project_id": "fire-kitkat",
+    "storage_bucket": "fire-kitkat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282637630909:android:45c7655e349a226c",
+        "android_client_info": {
+          "package_name": "firekitkat.com.firekitkat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282637630909-5p0guvc79h6413qrrofkbt965vq1k9ic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "firekitkat.com.firekitkat",
+            "certificate_hash": "e862a1b1c304bc18b0fb27819c47c04fbcbf1c67"
+          }
+        },
+        {
+          "client_id": "282637630909-svv163fo4nlofe5ce5a0t2c110uoj3uk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy0z9lKOVjkKqTeIYPW6ma9y8T5q7RPf8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282637630909-svv163fo4nlofe5ce5a0t2c110uoj3uk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
