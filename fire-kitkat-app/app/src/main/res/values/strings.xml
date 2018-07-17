@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Fire Kitkat</string>
+    <string name="wait_for_the_fire_magic">Wait for the fire magic!</string>
+    <string name="str_btn_try_again">Try again!</string>
 </resources>

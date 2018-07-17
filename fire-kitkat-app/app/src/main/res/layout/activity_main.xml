@@ -5,5 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.MainActivity">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <com.otaliastudios.cameraview.CameraView
+            android:id="@+id/cameraView"
+            android:keepScreenOn="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:id="@+id/ivProcessedImage"
+            android:layout_height="match_parent" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@android:color/transparent"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/btnTryAgain"
+                android:layout_width="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:onClick="btnTryAgainOnClick"
+                 android:text="@string/str_btn_try_again"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginBottom="20sp"
+                android:layout_alignParentBottom="true"
+                android:textSize="24sp"
+                android:id="@+id/tvWaitFaceRecognition"
+                android:text="@string/wait_for_the_fire_magic"/>
+
+        </RelativeLayout>
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>
