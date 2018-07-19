@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create a new Artist</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="kitkat.css">
+</head>
+<body>
+	<div class="dropdown" style="float:right;right: 200px">
+		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Menu
+		  </button>
+		  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+		    <button class="dropdown-item" type="button"><a href="#" id="logOut">Log out</a></button>
+		    <button class="dropdown-item" type="button"><a href="newArtist.html">New artist</a></button>
+		    <button class="dropdown-item" type="button"><a href="list.html">Artists list</a></button>
+		  </div>
+	</div>
+	<div class="alert alert-success" role="alert" id="success" style="display: none;">
+	  Artist created
+	</div>
+	<div class="alert alert-danger" role="alert" id="error" style="display: none">
+	 There was an error"
+	</div>
+	<div class="centered-container">
+		<div class="form-group form-container">
+			<input type="hidden" name="documentId" id="documentId"/>
+			<label for="exampleInputEmail1">Name</label>
+			<input type="text" name="artistName" id="artistName" class="form-control">
+			<label for="exampleInputEmail1">Video ID</label>
+			<input type="text" name="videoId" id="videoId" class="form-control">
+			<label for="exampleInputEmail1">Image</label>
+			
+			<div class="custom-file" style="margin-bottom: .5rem">
+			  <input type="file" class="custom-file-input form-control" id="photo">
+			  <label class="custom-file-label" for="customFile">Choose file</label>
+			</div>
+			<button type="submit" class="btn btn-primary" id="create">Add</button>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<!-- Firebase JS-->
+	<script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+	
+	<script type="text/javascript">
+
+		// TODO: Replace with your project's customized code snippet
+		
+		  var config = {
+		    apiKey: "AIzaSyBGPO8u78pjhVykqb_zPiRLrb_gxQMiaU0",
+		    authDomain: "fire-kitkat.firebaseapp.com",
+		    databaseURL: "https://fire-kitkat.firebaseio.com",
+		    projectId: "fire-kitkat",
+		    storageBucket: "gs://fire-kitkat.appspot.com",
+		    //messagingSenderId: "<SENDER_ID>",
+		  };
+		  firebase.initializeApp(config);
+
+		  let searchParams = new URLSearchParams(window.location.search)
+
+		if(searchParams.has("id")){
+			$("#docID").html("ID: "+searchParams.get("id"));
+
+			const firestore = firebase.firestore();
+			const settings = {timestampsInSnapshots: true};
+			firestore.settings(settings);
+			// Initialize Cloud Firestore through Firebase
+			var db = firebase.firestore();
+
+			var docRef = db.collection("artists").doc(searchParams.get("id"));
+
+			docRef.get().then(function(doc) {
+			    if (doc.exists) {
+			    	$("#documentId").val(doc.id);
+			        $("#artistName").val(doc.data().name);
+			        $("#videoId").val(doc.data().videoId);
+			    } else {
+			        // doc.data() will be undefined in this case
+			        console.log("No such document!");
+			    }
+			}).catch(function(error) {
+			    console.log("Error getting document:", error);
+			});
+
+		}
+
+		$("#create").click(function(){
+			var db = firebase.firestore();
+			const firestore = firebase.firestore();
+			const settings = {timestampsInSnapshots: true};
+			firestore.settings(settings);
+			// Add a new document with a generated id.
+			db.collection("artists").add({
+			    name: $("#artistName").val(),
+			    videoId: $("#videoId").val(),
+			    faceMap: { leftEyeDistance: 0, rightEyeDistance: 0, leftMouthDistance: 0, rightMouthDistance:0 },
+			    photoUrl: ""
+			})
+			.then(function(docRef) {
+			    console.log("Document written with ID: ", docRef.id);
+			    var storageRef = firebase.storage().ref();
+
+				var fileName = document.getElementById('photo').files[0].name;
+				var ext = fileName.split('.').pop();
+				var artistPhoto = storageRef.child('celebrity/'+docRef.id+'.'+ext);
+
+				var file = document.getElementById('photo').files[0];
+				artistPhoto.put(file).then(function(snapshot) {
+				  console.log('Uploaded a blob or file!');
+				  snapshot.ref.getDownloadURL().then(function(downloadURL) {
+				    var artistRef = db.collection("artists").doc(docRef.id);
+			
+					return artistRef.update({
+					    photoUrl: downloadURL
+					})
+					.then(function() {
+					    console.log("URL successfully updated!");
+					    $("#success").show(800);
+					    clearForm();
+					})
+					.catch(function(error) {
+					    // The document probably doesn't exist.
+					    console.error("Error updating document: ", error);
+					});
+				  });
+				});
+			})
+			.catch(function(error) {
+			    console.error("Error adding document: ", error);
+			    $("#error").show(800);
+			});
+		});
+
+		var inputElement = document.getElementById("photo");
+		inputElement.addEventListener("change", handleFiles, false);
+		function handleFiles() {
+		  var fileList = this.files; /* now you can work with the file list */
+		  console.log(this.files);
+		}
+		$("#success").click(function(){$(this).hide()});
+		$("#error").click(function(){$(this).hide()});
+
+		function clearForm(){
+			$("#artistName").val("");
+			$("#videoId").val("");
+			$("#photo").val();
+		}
+
+	</script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+</body>
+</html>
