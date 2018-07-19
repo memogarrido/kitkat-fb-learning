@@ -1,0 +1,21 @@
+.centered-container{
+	top: 30%;
+	left: 50%;
+	position: absolute;
+}
+#artistsTable{
+	width: 600px;
+	height: auto;
+	left: -300px;
+	position: absolute;
+}
+.form-container{
+	width: 600px;
+	left: -300px;
+	position: absolute;
+}
+.current{
+	width: 200px;
+	height: 200px;
+	margin-left: 200px;
+}
