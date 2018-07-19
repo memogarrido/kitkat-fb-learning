@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>List of artists</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="kitkat.css">
+</head>
+<body>
+	<div class="dropdown" style="float:right;right: 200px">
+		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Menu
+		  </button>
+		  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+		    <button class="dropdown-item" type="button"><a href="#" id="logOut">Log out</a></button>
+		    <button class="dropdown-item" type="button"><a href="newArtist.html">New artist</a></button>
+		  </div>
+	</div>
+	<div class="centered-container">
+		<table id="artistsTable" class="table table-dark table-striped">
+			<thead class="thead-light">
+				<th scope="col">Name</th>
+				<th scope="col">Video ID</th>
+				<th scope="col">Actions</th>
+			</thead>
+			<tbody id="artistTableBody"></tbody>
+		</table>
+	</div>
+	
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<!-- Firebase JS-->
+	<script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+	
+	<script type="text/javascript">
+		  var config = {
+		    apiKey: "AIzaSyBGPO8u78pjhVykqb_zPiRLrb_gxQMiaU0",
+		    authDomain: "fire-kitkat.firebaseapp.com",
+		    databaseURL: "https://fire-kitkat.firebaseio.com",
+		    projectId: "fire-kitkat",
+		    //storageBucket: "<BUCKET>.appspot.com",
+		    //messagingSenderId: "<SENDER_ID>",
+		  };
+		  firebase.initializeApp(config);
+		
+		const firestore = firebase.firestore();
+		const settings = {timestampsInSnapshots: true};
+		firestore.settings(settings);
+		// Initialize Cloud Firestore through Firebase
+		var db = firebase.firestore();
+
+		var artists = db.collection("artists");
+
+		db.collection("artists").get().then((querySnapshot) => {
+		    querySnapshot.forEach((doc) => {
+		        var docRef = db.collection("artists").doc(doc.id);
+
+		        docRef.get().then(function(doc2) {
+				    if (doc2.exists) {
+				        $("#artistTableBody").append("<tr><td>"+doc2.data().name+"</td><td>"+doc2.data().videoId+"</td><td><a href='edit.html?id="+doc2.id+"'>Edit</a></td></tr>");
+				    } else {
+				        // doc.data() will be undefined in this case
+				        console.log("No such document!");
+				    }
+				}).catch(function(error) {
+				    console.log("Error getting document:", error);
+				});//Close
+		        
+		    });
+		});
+		
+
+		$(function(){
+			$("#logOut").click(function(){
+				firebase.auth().signOut().then(function() {
+				  // Sign-out successful.
+				  console.log("Exit");
+				  window.location.replace("index.html");
+				}).catch(function(error) {
+				  // An error happened.
+				  console.log("error:"+error);
+				});
+			});
+		});
+	</script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+</body>
+</html>
