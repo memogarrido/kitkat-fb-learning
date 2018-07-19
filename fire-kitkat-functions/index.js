@@ -129,7 +129,7 @@ exports.whoAmIAlike = functions.https.onRequest((req, res) => {
       });
 
       var result = artistList[0];
-
+      result.result = 100-result.closeness;
       var resultString = JSON.stringify(result);
       console.log("result string", resultString);
       res.send(resultString.toString());
