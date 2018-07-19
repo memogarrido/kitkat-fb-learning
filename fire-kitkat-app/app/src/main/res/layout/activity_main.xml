@@ -1,45 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.MainActivity">
-    <FrameLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:id="@+id/rlEmpty"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_marginTop="60sp"
+            android:id="@+id/ivLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/fire_kitkat"
+            />
+        <TextView
+            android:id="@+id/tvWellcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivLogo"
+            android:textSize="32sp"
+            android:layout_centerHorizontal="true"
+            android:text="No items to display"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvMatches"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.otaliastudios.cameraview.CameraView
-            android:id="@+id/cameraView"
-            android:keepScreenOn="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <ImageView
-            android:layout_width="match_parent"
-            android:id="@+id/ivProcessedImage"
-            android:layout_height="match_parent" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:background="@android:color/transparent"
-            android:layout_height="match_parent">
-            <Button
-                android:id="@+id/btnTryAgain"
-                android:layout_width="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:onClick="btnTryAgainOnClick"
-                 android:text="@string/str_btn_try_again"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:layout_marginBottom="20sp"
-                android:layout_alignParentBottom="true"
-                android:textSize="24sp"
-                android:id="@+id/tvWaitFaceRecognition"
-                android:text="@string/wait_for_the_fire_magic"/>
+    </android.support.v7.widget.RecyclerView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabNewMatch"
+        android:onClick="fabNewMatchOnClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_add_a_photo_enabled"
+        android:layout_margin="16dp"
 
-        </RelativeLayout>
-    </FrameLayout>
-</android.support.constraint.ConstraintLayout>
+        android:layout_gravity="bottom|right"
+        app:layout_anchor="@id/rvMatches"
+        app:layout_anchorGravity="bottom|right|end"/>
+
+</android.support.design.widget.CoordinatorLayout>

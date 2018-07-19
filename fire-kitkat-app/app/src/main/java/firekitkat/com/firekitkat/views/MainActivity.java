@@ -1,155 +1,92 @@
 package firekitkat.com.firekitkat.views;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
-import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.face.Landmark;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
-import com.google.firebase.ml.vision.face.FirebaseVisionFace;
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.Facing;
-import com.otaliastudios.cameraview.Frame;
-import com.otaliastudios.cameraview.FrameProcessor;
-import com.otaliastudios.cameraview.Size;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import firekitkat.com.firekitkat.R;
-import firekitkat.com.firekitkat.models.FaceMap;
-import firekitkat.com.firekitkat.utils.FaceUtils;
+import firekitkat.com.firekitkat.adapters.MatchesAdapter;
+import firekitkat.com.firekitkat.models.Artist;
+import firekitkat.com.firekitkat.models.Match;
+import firekitkat.com.firekitkat.models.User;
 
-public class MainActivity extends AppCompatActivity implements FrameProcessor, OnSuccessListener<List<FirebaseVisionFace>>, OnFailureListener {
-    CameraView cameraView;
-    boolean faceMatchRequested = false;
-    FirebaseVisionFaceDetectorOptions options;
-    FirebaseVisionFaceDetector detector;
-    TextView tvWaitFaceRecognition;
-    Button btnTryAgain;
-    ImageView ivProcessedImage;
+public class MainActivity extends AppCompatActivity {
+    RecyclerView rvMatches;
+    RelativeLayout rlEmpty;
+    MatchesAdapter adapterRvMatches;
+    ArrayList<Match> matchArrayList;
+    private Query query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        cameraView = findViewById(R.id.cameraView);
-        cameraView.setFacing(Facing.FRONT);
-        cameraView.addFrameProcessor(this);
-        options =
-                new FirebaseVisionFaceDetectorOptions.Builder()
-                        .setModeType(FirebaseVisionFaceDetectorOptions.ACCURATE_MODE)
-                        .setLandmarkType(FirebaseVisionFaceDetectorOptions.ALL_LANDMARKS)
-                        .setClassificationType(FirebaseVisionFaceDetectorOptions.NO_CLASSIFICATIONS)
-                        .setMinFaceSize(0.15f)
-                        .setTrackingEnabled(true)
-                        .build();
-        detector = FirebaseVision.getInstance()
-                .getVisionFaceDetector(options);
-        tvWaitFaceRecognition = findViewById(R.id.tvWaitFaceRecognition);
-        btnTryAgain = findViewById(R.id.btnTryAgain);
-        ivProcessedImage = findViewById(R.id.ivProcessedImage);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        cameraView.start();
 
-    }
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        cameraView.stop();
-    }
+        rvMatches = findViewById(R.id.rvMatches);
+        rlEmpty= findViewById(R.id.rlEmpty);
+        rvMatches.setHasFixedSize(true);
+        LinearLayoutManager layoutManagerRvMatches = new LinearLayoutManager(this);
+        rvMatches.setLayoutManager(layoutManagerRvMatches);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        cameraView.destroy();
-    }
+        query = db.collection("matches")
+                .orderBy("votesCount", Query.Direction.DESCENDING)
+                .limit(20);
 
-    @Override
-    public void process(@NonNull Frame frame) {
-        byte[] data = frame.getData();
-        int rotation = frame.getRotation();
-        Size size = frame.getSize();
-        int format = frame.getFormat();
-        int firebaseRotation =
-                rotation == 90 ? FirebaseVisionImageMetadata.ROTATION_90 :
-                        rotation == 180 ? FirebaseVisionImageMetadata.ROTATION_180 :
-                                rotation == 270 ? FirebaseVisionImageMetadata.ROTATION_270 :
-                                        FirebaseVisionImageMetadata.ROTATION_0;
-        if (size!=null) {
-            FirebaseVisionImageMetadata metadata = new
-                    FirebaseVisionImageMetadata.Builder()
-                    .setWidth(size.getWidth())
-                    .setHeight(size.getHeight())
-                    .setFormat(format)
-                    .setRotation(firebaseRotation)
-                    .build();
-            FirebaseVisionImage fbVisionImage = FirebaseVisionImage.fromByteArray(data, metadata);
-
-            detector.detectInImage(fbVisionImage)
-                    .addOnSuccessListener(MainActivity.this)
-                    .addOnFailureListener(MainActivity.this);
-
-        }
-    }
-
-    @Override
-    public void onSuccess(List<FirebaseVisionFace> firebaseVisionFaces) {
-        for (FirebaseVisionFace face : firebaseVisionFaces) {
-
-            Log.d("mltest", face.getLandmark(Landmark.LEFT_MOUTH) + "LM");
-            Log.d("mltest", face.getLandmark(Landmark.RIGHT_MOUTH) + "RM");
-            Log.d("mltest", face.getLandmark(Landmark.NOSE_BASE) + "NB");
-            Log.d("mltest", face.getLandmark(Landmark.LEFT_EYE) + "LEY");
-            Log.d("mltest", face.getLandmark(Landmark.RIGHT_EYE) + "REY");
-            if(face.getLandmark(Landmark.LEFT_MOUTH)!=null &&
-                    face.getLandmark(Landmark.RIGHT_MOUTH)!=null &&
-                    face.getLandmark(Landmark.NOSE_BASE) !=null &&
-                    face.getLandmark(Landmark.LEFT_EYE) !=null &&
-                    face.getLandmark(Landmark.RIGHT_EYE)!=null){
-               FaceMap faceMap = FaceUtils.getFaceMap(face);
-                faceMatchRequested=true;//move this when the actual firebase function is called
-                btnTryAgain.setVisibility(View.VISIBLE);
-                tvWaitFaceRecognition.setText("LeftEye: " + faceMap.getLeftEyeDistance() + " RightEye: " + faceMap.getRightEyeDistance() );
-                //startVideo("OKrloDzGpU");
+        adapterRvMatches = new MatchesAdapter(query){
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    rvMatches.setVisibility(View.GONE);
+                    rlEmpty.setVisibility(View.VISIBLE);
+                } else {
+                    rvMatches.setVisibility(View.VISIBLE);
+                    rlEmpty.setVisibility(View.GONE);
+                }
             }
 
-
-        }
-    }
-    private void startVideo(String videoID) { // default youtube app
-        String videoId = videoID;
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoId));
-        intent.putExtra("VIDEO_ID", videoId);
-        startActivity(intent);
-
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+                Snackbar.make(findViewById(android.R.id.content),
+                        "Error trying to fetch data", Snackbar.LENGTH_LONG).show();
+            }
+        };
+        rvMatches.setAdapter(adapterRvMatches);
     }
     @Override
-    public void onFailure(@NonNull Exception e) {
-
+    protected void onStart(){
+        super.onStart();
+        if (adapterRvMatches != null) {
+            adapterRvMatches.startListening();
+        }
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapterRvMatches != null) {
+            adapterRvMatches.stopListening();
+        }
     }
 
-    public void btnTryAgainOnClick(View view) {
-        faceMatchRequested =false;
-        view.setVisibility(View.GONE);
+    public void fabNewMatchOnClick(View view) {
+        Intent intent = new Intent(this, MatchActivity.class);
+        startActivity(intent);
     }
+
+
 }
