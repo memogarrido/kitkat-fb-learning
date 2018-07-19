@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.LoginActivity">
+    <ImageView
+        android:layout_marginTop="60sp"
+        android:id="@+id/ivLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/fire_kitkat"
+        />
+    <TextView
+        android:id="@+id/tvWellcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivLogo"
+        android:textSize="32sp"
+        android:layout_centerHorizontal="true"
+        android:text="Wellcome to the fire!"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:id="@+id/tvAppName"
+        android:layout_below="@id/tvWellcome"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:text="Fire Kitkat"/>
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tvAppName"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp" />
+</RelativeLayout>

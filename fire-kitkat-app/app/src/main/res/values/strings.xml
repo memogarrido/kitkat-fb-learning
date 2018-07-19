@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Fire Kitkat</string>
+    <string name="wait_for_the_fire_magic">Wait for the fire magic!</string>
+    <string name="str_btn_try_again">Try again!</string>
+    <string name="str_tvmatchtitle"> %1$s match is  %2$s</string>
+    <string name="str_tvmatchresult">%1$s match</string>
+    <string name="str_tvmatchvotes">+234</string>
+    <string name="facebook_app_id">244789523003820</string>
+    <string name="fb_login_protocol_scheme">fb244789523003820</string>
+</resources>
