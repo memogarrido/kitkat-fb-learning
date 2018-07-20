@@ -37,6 +37,7 @@ public class MatchesAdapter extends  FirestoreAdapter<MatchesAdapter.ViewHolder>
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvCardMatchTitle;
+        TextView tvMatchVotes;
         TextView tvMatchResult;
         ImageView ivMatchUser;
         ImageView ivMatchArtist;
@@ -49,7 +50,7 @@ public class MatchesAdapter extends  FirestoreAdapter<MatchesAdapter.ViewHolder>
             ivMatchUser = itemView.findViewById(R.id.ivMatchUser);
             ivMatchArtist = itemView.findViewById(R.id.ivMatchArtist);
             ivMatchVote = itemView.findViewById(R.id.ivMatchVote);
-
+            tvMatchVotes= itemView.findViewById(R.id.tvMatchVotes);
 
         }
         public void bind(final DocumentSnapshot snapshot) {
@@ -72,6 +73,9 @@ public class MatchesAdapter extends  FirestoreAdapter<MatchesAdapter.ViewHolder>
                                         HashMap<String, Boolean> mapVote = new HashMap<>();
                                         mapVote.put("vote", true);
                                         document.getReference().set(mapVote);
+                                        match.setVotesCount(match.getVotesCount()+  1);
+                                        MatchesAdapter.this.notifyDataSetChanged();
+                                        snapshot.getReference().set(match);
                                         ivMatchVote.setBackgroundResource(R.drawable.ic_exposure_plus_1_disabled);
                                     }
                                     else
@@ -96,8 +100,8 @@ public class MatchesAdapter extends  FirestoreAdapter<MatchesAdapter.ViewHolder>
                     .load(match.getArtist().getPhotoUrl())
                     .into(ivMatchArtist);
             String matchTitle = String.format(resources.getString(R.string.str_tvmatchtitle), match.getUser().getName(), match.getArtist().getName());
-            String matchResult = String.format(resources.getString(R.string.str_tvmatchresult), match.getResult()+"");
-
+            String matchResult = String.format(resources.getString(R.string.str_tvmatchresult), match.getResult());
+            tvMatchVotes.setText("+" + match.getVotesCount());
 
             tvCardMatchTitle.setText(matchTitle);
             tvMatchResult.setText(matchResult);

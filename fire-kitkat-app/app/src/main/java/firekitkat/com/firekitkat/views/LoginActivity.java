@@ -98,7 +98,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     }
 
     private void updateUI(FirebaseUser user) {
-        FireKitkat.getInstance().setUser(user);
-        finish();
+        if(user!=null){
+            FireKitkat.getInstance().setUser(user);
+            finish();
+        }
+
     }
 }

@@ -37,7 +37,7 @@
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="face" />
-        <activity android:name=".views.MatchActivity"/>
+        <activity android:name=".views.MatchActivity" android:resizeableActivity="false" />
         <activity android:name=".views.LoginActivity"/>
         <activity android:name=".views.MainActivity"
             android:label="Fire Kitkat - Top Voted Matches"

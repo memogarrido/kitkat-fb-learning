@@ -7,6 +7,7 @@
     tools:context=".views.MatchActivity">
     <FrameLayout
         android:layout_width="match_parent"
+        android:id="@+id/frameLayout"
         android:layout_height="match_parent">
 
         <com.otaliastudios.cameraview.CameraView
@@ -14,20 +15,57 @@
             android:keepScreenOn="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <ImageView
-            android:layout_width="match_parent"
+        <firekitkat.com.firekitkat.views.custom.FaceMapView
             android:id="@+id/ivProcessedImage"
-            android:layout_height="match_parent" />
+            android:layout_width="match_parent"
+            android:background="#22000000"
+
+            android:layout_height="match_parent"
+            />
         <RelativeLayout
             android:layout_width="match_parent"
             android:background="@android:color/transparent"
             android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/ivMACameraShot"
+                    android:layout_width="150dp"
+                    android:layout_margin="6dp"
+                    android:layout_height="180dp" />
+                <ImageView
+                    android:layout_width="150dp"
+                    android:id="@+id/ivMAArtist"
+                    android:layout_margin="6dp"
+                    android:layout_height="180dp" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/btnPlayMusicVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_toStartOf="@id/btnPost"
+                android:layout_centerInParent="true"
+                android:onClick="btnPlayVideoOnClick"
+                android:text="@string/str_play_video"/>
+            <Button
+                android:id="@+id/btnPost"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:onClick="btnPostClick"
+                android:text="@string/str_post_result"/>
             <Button
                 android:id="@+id/btnTryAgain"
                 android:layout_width="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/btnPost"
                 android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:onClick="btnTryAgainOnClick"
                  android:text="@string/str_btn_try_again"/>
             <TextView
